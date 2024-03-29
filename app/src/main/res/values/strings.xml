@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MADMeditations</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
+    <string name="title_activity_onb_boarding">OnbBoarding</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_register">Register</string>
+    <string name="title_activity_main">Main</string>
+    <string name="title_activity_menu">Menu</string>
+</resources>
