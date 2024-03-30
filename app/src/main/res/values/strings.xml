@@ -8,8 +8,5 @@
     <string name="title_activity_register">Register</string>
     <string name="title_activity_main">Main</string>
     <string name="title_activity_menu">Menu</string>
-<<<<<<< HEAD
     <string name="title_activity_profile">Profile</string>
-=======
->>>>>>> 5bd1795ef7eeadf2709c30c272ec943df2881a1f
 </resources>
