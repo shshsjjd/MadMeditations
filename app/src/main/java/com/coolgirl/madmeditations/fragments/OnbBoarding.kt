@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
+<<<<<<< HEAD
 import androidx.compose.foundation.clickable
+=======
+>>>>>>> 5bd1795ef7eeadf2709c30c272ec943df2881a1f
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -40,12 +43,18 @@ class OnbBoarding : Fragment() {
         }
     }
 
+<<<<<<< HEAD
     private fun toLogin(){
         findNavController().navigate(R.id.action_onBoarding_to_login)
     }
     private fun toRegister(){
         findNavController().navigate(R.id.action_onBoarding_to_register)
     }
+=======
+    private fun navigateToLogin(){
+        findNavController().navigate(R.id.action_onBoarding_to_login)
+    }
+>>>>>>> 5bd1795ef7eeadf2709c30c272ec943df2881a1f
 
     @Composable
     fun OnbBoarding() {
@@ -91,7 +100,11 @@ class OnbBoarding : Fragment() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Button(onClick = {
+<<<<<<< HEAD
                     toLogin()
+=======
+                    navigateToLogin()
+>>>>>>> 5bd1795ef7eeadf2709c30c272ec943df2881a1f
                 },
                     colors = ButtonDefaults.buttonColors(colorResource(R.color.light_green))) {
                     Text(text = "ВОЙТИ В АККАУНТ",
@@ -99,8 +112,12 @@ class OnbBoarding : Fragment() {
                     )
                 }
                 Text(text = "Еще нет аккаунта? Зарегистрируйтесь",
+<<<<<<< HEAD
                     color = colorResource(R.color.white),
                     modifier = Modifier.clickable { toRegister() }
+=======
+                    color = colorResource(R.color.white)
+>>>>>>> 5bd1795ef7eeadf2709c30c272ec943df2881a1f
                 )
             }
         }
