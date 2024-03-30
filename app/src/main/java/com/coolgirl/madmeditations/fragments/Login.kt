@@ -120,13 +120,7 @@ class Login : Fragment() {
                 TextButton(onClick = { toRegister() }) {
                     Text(text = "Register", color = colorResource(R.color.white))
                 }
-<<<<<<< HEAD
                 Button(onClick = { toMain() },
-=======
-                Button(onClick = {
-                    //тут будет клик
-                },
->>>>>>> 5bd1795ef7eeadf2709c30c272ec943df2881a1f
                     colors = ButtonDefaults.buttonColors(colorResource(R.color.light_green)),
                     modifier = Modifier
                         .fillMaxWidth(0.89f)
