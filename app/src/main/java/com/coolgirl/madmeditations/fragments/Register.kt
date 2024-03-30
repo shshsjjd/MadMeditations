@@ -43,13 +43,5 @@ class Register : Fragment() {
             }
         }
     }
-<<<<<<< HEAD
-    data class asfsf(
-        val login:String,
-        val password:String
-    )
-=======
-
->>>>>>> 5bd1795ef7eeadf2709c30c272ec943df2881a1f
 }
 
