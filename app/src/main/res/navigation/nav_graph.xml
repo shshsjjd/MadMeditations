@@ -18,12 +18,9 @@
         <action
             android:id="@+id/action_onBoarding_to_login"
             app:destination="@id/login" />
-<<<<<<< HEAD
         <action
             android:id="@+id/action_onBoarding_to_register"
             app:destination="@id/register" />
-=======
->>>>>>> 5bd1795ef7eeadf2709c30c272ec943df2881a1f
     </fragment>
 
     <fragment
@@ -51,12 +48,9 @@
         <action
             android:id="@+id/action_main_to_menu"
             app:destination="@id/menu" />
-<<<<<<< HEAD
         <action
             android:id="@+id/action_main_to_profile"
             app:destination="@id/profile" />
-=======
->>>>>>> 5bd1795ef7eeadf2709c30c272ec943df2881a1f
     </fragment>
 
     <fragment
@@ -64,7 +58,6 @@
         android:name="com.coolgirl.madmeditations.fragments.Menu"
         android:label="menu">
     </fragment>
-<<<<<<< HEAD
 
     <fragment
         android:id="@+id/profile"
@@ -77,6 +70,4 @@
             android:id="@+id/action_profile_to_main"
             app:destination="@id/main" />
     </fragment>
-=======
->>>>>>> 5bd1795ef7eeadf2709c30c272ec943df2881a1f
 </navigation>
