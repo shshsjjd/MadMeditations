@@ -1,7 +1,11 @@
 package com.coolgirl.madmeditations.fragments
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Nickname
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +15,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -26,41 +30,114 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import coil.compose.rememberImagePainter
+import com.coolgirl.madmeditations.Models.*
 import com.coolgirl.madmeditations.R
 import com.coolgirl.madmeditations.fragments.ui.theme.MADMeditationsTheme
-import java.sql.DriverManager.println
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class Main : Fragment() {
+public class Main : Fragment() {
+   var feelings : List<Feelings>? = null
+   lateinit var pref : SharedPreferences
+   var user : UserLoginDataResponse? = null
    override fun onCreateView(
       inflater: LayoutInflater,
       container: ViewGroup?,
       savedInstanceState: Bundle?
    ): View? {
+
       return ComposeView(requireContext()).apply {
          setViewCompositionStrategy(
             ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
          )
+         LoadPage()
+         pref = context.getSharedPreferences("UserData", Context.MODE_PRIVATE)
+         SetData()
          setContent {
+
             SetMain()
          }
       }
    }
 
-   fun toMenu(){
-      findNavController().navigate(R.id.action_main_to_menu)
+   fun SetData(){
+      if(arguments!!.getString("avatar", null)!=null){
+         user = UserLoginDataResponse(
+            null,
+            null,
+            arguments!!.getString("nickName", null),
+            arguments!!.getString("avatar", null),
+            null
+         )
+         val editor = pref.edit()
+         editor.putString("nickName", user?.nickName)
+         editor.putString("avatar", user?.avatar)
+         editor.apply()
+      }else{
+         user = UserLoginDataResponse(
+            null,
+            null,
+            pref.getString("nickName", null),
+            pref.getString("avatar", null),
+            null
+         )
+      }
    }
+
+
+   fun LoadPage() {
+      var apiClient = ApiClient.start().create(ApiController::class.java)
+      val call: Call<ResponseFeelings>? = apiClient.getFeelings()
+      call!!.enqueue(object : Callback<ResponseFeelings?>{
+         override fun onResponse(
+            call: Call<ResponseFeelings?>,
+            response: Response<ResponseFeelings?>
+         ) {
+            val responseData = response.body()
+            if (responseData != null) {
+               feelings = responseData.data
+            }
+         }
+         override fun onFailure(call: Call<ResponseFeelings?>, t: Throwable) {
+         }
+      })
+   }
+
+   fun toMenu(){ findNavController().navigate(R.id.action_main_to_menu) }
+
    fun toProfile(){
-      findNavController().navigate(R.id.action_main_to_profile)
+      val bundle = Bundle()
+      bundle.putString("nickName", arguments!!.getString("nickName"))
+      bundle.putString("avatar",arguments!!.getString("avatar"))
+      findNavController().navigate(R.id.action_main_to_profile, bundle)
    }
+   @Composable
+   fun SetHorizontallScroll(){
+      feelings?.let { feelingsList ->
+         for (i in 0 until feelingsList.size) {
+            val feel = feelingsList[i]
+            feel.title?.let { title ->
+               feel.image?.let { image ->
+                  ScrollItemMindset(title, image)
+               }
+            }
+         }
+      }
+   }
+
 
    @Composable
    fun SetMain(){
-
       Column(modifier = Modifier
          .fillMaxSize()
          .background(colorResource(R.color.dark_green))
       ) {
-
          SetHead()
          Row(
             modifier = Modifier
@@ -70,24 +147,20 @@ class Main : Fragment() {
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.Top
          ){
-            ScrollItemMindset(  "Спокойным", R.drawable.calm_item)
-            ScrollItemMindset( "Расслабленным", R.drawable.relax_item )
-            ScrollItemMindset( "Cфокусированным", R.drawable.focus_item)
-            ScrollItemMindset("Взволнованным", R.drawable.anxious_item )
-            ScrollItemMindset("Норм", R.drawable.norm_item )
+            SetHorizontallScroll()
          }
          Column(
             modifier = Modifier
-               .fillMaxWidth().fillMaxHeight(0.85f)
+               .fillMaxWidth()
+               .fillMaxHeight(0.85f)
                .verticalScroll(ScrollState(1), true),
             verticalArrangement = Arrangement.Top){
             ScrollItemBlock(R.drawable.iconforblock1)
             ScrollItemBlock(R.drawable.iconforblock2)
          }
-
-
-
-         Row(modifier = Modifier.fillMaxWidth().fillMaxHeight(), verticalAlignment = Alignment.Bottom){
+         Row(modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(), verticalAlignment = Alignment.Bottom){
             SetBottomPanel()
          }
       }
@@ -116,10 +189,11 @@ class Main : Fragment() {
             contentDescription = "image"
          )
          Image(
-            painter = painterResource(id = R.drawable.usericon),
+            painter = rememberImagePainter(user?.avatar),
             contentDescription = "image",
             contentScale = ContentScale.Crop,
             modifier = Modifier
+               .clickable { toProfile() }
                .size(40.dp)
                .clip(CircleShape)
          )
@@ -130,15 +204,14 @@ class Main : Fragment() {
             .fillMaxHeight(0.15f),
          horizontalAlignment = Alignment.CenterHorizontally,
          verticalArrangement = Arrangement.Top){
-         Text(text = "С возвращением, Эмиль!", color = colorResource(R.color.white), fontSize = 25.sp)
+         Text(text = "С возвращением, ${user?.nickName}!", color = colorResource(R.color.white), fontSize = 25.sp)
          Text(text = "Каким ты себя ощущаешь сегодня?", color = colorResource(R.color.white))
       }
-
    }
 
    @SuppressLint("ResourceType")
    @Composable
-   fun ScrollItemMindset(itemName:String, @DrawableRes img : Int){
+   fun ScrollItemMindset(itemName:String, img : String){
       Column(modifier = Modifier.fillMaxHeight(),
          verticalArrangement = Arrangement.SpaceBetween,
          horizontalAlignment = Alignment.CenterHorizontally) {
@@ -155,7 +228,7 @@ class Main : Fragment() {
                   .padding(10.dp)
                   .background(colorResource(R.color.white))) {
                Image(
-                  painter = painterResource(img),
+                  painter = rememberImagePainter(img),
                   contentDescription = "image",
                   contentScale = ContentScale.Crop,
                   modifier = Modifier
@@ -200,7 +273,9 @@ class Main : Fragment() {
    @Composable
    fun SetBottomPanel(){
       Row(
-         modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+         modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
          verticalAlignment = Alignment.CenterVertically,
          horizontalArrangement = Arrangement.SpaceEvenly){
          Image(
@@ -209,17 +284,21 @@ class Main : Fragment() {
             contentDescription = "image"
          )
          Image(
-            modifier = Modifier.fillMaxHeight(0.8f).size(20.dp),
+            modifier = Modifier
+               .fillMaxHeight(0.8f)
+               .size(20.dp),
             painter = painterResource(R.drawable.sound_icon),
             contentDescription = "image"
          )
          Image(
-            modifier = Modifier.fillMaxHeight(0.8f).size(20.dp).clickable { toProfile() },
+            modifier = Modifier
+               .fillMaxHeight(0.8f)
+               .alpha(0.5f)
+               .size(20.dp)
+               .clickable { toProfile() },
             painter = painterResource(R.drawable.profile_icon),
             contentDescription = "image"
          )
       }
    }
-
-
-   }
+}

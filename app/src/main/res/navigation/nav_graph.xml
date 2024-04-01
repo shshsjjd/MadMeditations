@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/onBoarding">
+    app:startDestination="@id/login">
     <fragment
         android:id="@+id/splashScreen"
         android:name="com.coolgirl.madmeditations.fragments.SplashScreen"
@@ -34,6 +33,9 @@
         <action
             android:id="@+id/action_login_to_main"
             app:destination="@id/main" />
+        <action
+            android:id="@+id/action_login_to_onBoarding"
+            app:destination="@id/onBoarding" />
     </fragment>
 
     <fragment
@@ -68,11 +70,16 @@
             android:id="@+id/action_profile_to_menu"
             app:destination="@id/menu" />
         <action
-            android:id="@+id/action_profile_to_main"
-            app:destination="@id/main" />
+            android:id="@+id/action_profile_to_login"
+            app:destination="@id/login" />
+        <action
+            android:id="@+id/action_profile_to_photo"
+            app:destination="@id/photo" />
     </fragment>
-<<<<<<< HEAD
+
+    <fragment
+        android:id="@+id/photo"
+        android:name="com.coolgirl.madmeditations.fragments.Photo"
+        android:label="photo">
+    </fragment>
 </navigation>
-=======
-</navigation>
->>>>>>> 74c03eb (slaaaayy)
